@@ -1,0 +1,17 @@
+apiVersion: v1
+entries:
+  common:
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2022-11-24T11:38:45.690247766+07:00"
+    description: Common chart for use by microservices
+    digest: 8e73f6c850f61f9331e35699b5e0b0bac15d3c823529abee938b5633cd875b03
+    maintainers:
+    - email: duclm.269@gmail.com
+      name: duclm
+    name: common
+    type: library
+    urls:
+    - https://dth-devops.github.io/helm-repo/common-0.0.1.tgz
+    version: 0.0.1
+generated: "2022-11-24T11:38:45.689012315+07:00"
