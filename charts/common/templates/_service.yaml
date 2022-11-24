@@ -1,0 +1,42 @@
+{{- define "common.service" -}}
+{{- $common := dict "Values" .Values.common -}}
+{{- $noCommon := omit .Values "common" -}}
+{{- $overrides := dict "Values" $noCommon -}}
+{{- $noValues := omit . "Values" -}}
+{{- with merge $noValues $overrides $common -}}
+{{- $root:= . }}
+{{- range .Values.services}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "common.fullname" $root }}-svc-{{ .name }}
+  annotations:
+  {{- range $key, $val := .annotations }}
+    {{ $key }}: {{ $val | quote }}
+  {{- end }}
+  labels:
+    app.kubernetes.io/name: {{ include "common.name" $root }}-svc-{{ .name }}
+    helm.sh/chart: {{ include "common.chart" $root }}
+    app.kubernetes.io/instance: {{ $root.Release.Name }}
+    app.kubernetes.io/managed-by: {{ $root.Release.Service }}
+spec:
+  type: {{ .type | default "ClusterIP" }}
+  selector:
+    app.kubernetes.io/name: {{ include "common.name" $root }}
+    app.kubernetes.io/instance: {{ $root.Release.Name }}
+  ports:
+    {{- range $spec := .specs }}
+    - name: {{ $spec.name }}
+      port: {{ $spec.port }}
+      protocol: {{ $spec.protocol | default "TCP" }}
+      {{- if $spec.targetPort }}
+      targetPort: {{ $spec.targetPort }}
+      {{- end}}
+      {{- if  $spec.nodePort }}
+      nodePort: {{  $spec.nodePort }}
+      {{- end }}
+    {{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}

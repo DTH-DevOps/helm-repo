@@ -1,0 +1,5 @@
+.gitignore
+.idea
+Makefile
+*.iml
+*.tgz

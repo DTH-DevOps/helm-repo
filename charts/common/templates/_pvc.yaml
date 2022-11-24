@@ -1,0 +1,22 @@
+{{- define "common.persistentVolumeClaim" -}}
+{{- $common := dict "Values" .Values.common -}}
+{{- $noCommon := omit .Values "common" -}}
+{{- $overrides := dict "Values" $noCommon -}}
+{{- $noValues := omit . "Values" -}}
+{{- with merge $noValues $overrides $common -}}
+{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+{{ template "common.metadata" . }}
+spec:
+  storageClassName: {{ .Values.persistence.storageClass }}
+  accessModes:
+    {{- range .Values.persistence.accessMode }}
+    - {{ . }}
+    {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.size }}
+{{- end }}
+{{- end }}
+{{- end }}
